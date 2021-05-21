@@ -266,6 +266,7 @@ export function showNoDataFromSourceVideoError(jitsiTrack) {
  * }}
  */
 export function toggleScreensharing(enabled, audioOnly = false) {
+    console.log('### actions toggleScreensharing');
     return {
         type: TOGGLE_SCREENSHARING,
         enabled,
@@ -293,6 +294,9 @@ export function replaceLocalTrack(oldTrack, newTrack, conference) {
             || (conference = getState()['features/base/conference'].conference);
 
         if (conference) {
+            console.log('### conference.replaceTrack');
+            console.log('### oldTrack: ', oldTrack);
+            console.log('### newTrack: ', newTrack);
             await conference.replaceTrack(oldTrack, newTrack);
         }
 
@@ -308,6 +312,7 @@ export function replaceLocalTrack(oldTrack, newTrack, conference) {
  * @returns {Function}
  */
 function replaceStoredTracks(oldTrack, newTrack) {
+    console.log('### replaceStoredTracks');
     return dispatch => {
         // We call dispose after doing the replace because dispose will
         // try and do a new o/a after the track removes itself. Doing it
@@ -490,6 +495,8 @@ export function trackNoDataFromSourceNotificationInfoChanged(track, noDataFromSo
  * }}
  */
 export function trackRemoved(track) {
+    console.log('### trackRemoved');
+
     track.removeAllListeners(JitsiTrackEvents.TRACK_MUTE_CHANGED);
     track.removeAllListeners(JitsiTrackEvents.TRACK_VIDEOTYPE_CHANGED);
     track.removeAllListeners(JitsiTrackEvents.NO_DATA_FROM_SOURCE);
@@ -574,8 +581,8 @@ function _cancelGUMProcesses(getState) {
             .filter(t => t.local)
             .map(({ gumProcess }) =>
                 gumProcess && gumProcess.cancel().catch(logError)));
-}
 
+}
 /**
  * Disposes passed tracks and signals them to be removed.
  *
@@ -584,6 +591,8 @@ function _cancelGUMProcesses(getState) {
  * @returns {Function}
  */
 export function _disposeAndRemoveTracks(tracks) {
+    console.log('### disposeAndRemoveTracks');
+
     return dispatch =>
         _disposeTracks(tracks)
             .then(() =>
@@ -599,10 +608,13 @@ export function _disposeAndRemoveTracks(tracks) {
  * done for every track from the list.
  */
 function _disposeTracks(tracks) {
+    console.log('### disposeTracks');
+
     return Promise.all(
         tracks.map(t =>
             t.dispose()
                 .catch(err => {
+                    console.log('### error: ', err);
                     // Track might be already disposed so ignore such an error.
                     // Of course, re-throw any other error(s).
                     if (err.name !== JitsiTrackErrors.TRACK_IS_DISPOSED) {
@@ -689,6 +701,7 @@ function _trackCreateCanceled(mediaType) {
  * @returns {Function}
  */
 export function destroyLocalDesktopTrackIfExists() {
+    console.log('### destroyLocalDesktopTrackIfExists')
     return (dispatch, getState) => {
         const videoTrack = getLocalVideoTrack(getState()['features/base/tracks']);
         const isDesktopTrack = videoTrack && videoTrack.videoType === VIDEO_TYPE.DESKTOP;

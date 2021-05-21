@@ -487,6 +487,8 @@ export function isLocalTrackMuted(tracks, mediaType) {
 export function isLocalVideoTrackDesktop(state) {
     const videoTrack = getLocalVideoTrack(getTrackState(state));
 
+    console.log('### isLocalVideoTrackDesktop: ', videoTrack);
+
     return videoTrack && videoTrack.videoType === VIDEO_TYPE.DESKTOP;
 }
 

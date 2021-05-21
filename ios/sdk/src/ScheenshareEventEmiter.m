@@ -42,11 +42,13 @@ NSNotificationName const kBroadcastStoppedNotification = @"iOS_BroadcastStopped"
 // MARK: Private Methods
 
 - (void)setupObserver {
+    NSLog(@"### ScheenshareEventEmiter setupObserver");
     CFNotificationCenterAddObserver(_notificationCenter, (__bridge const void *)(self), broadcastStartedNotificationCallback, (__bridge CFStringRef)kBroadcastStartedNotification, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
     CFNotificationCenterAddObserver(_notificationCenter, (__bridge const void *)(self), broadcastStoppedNotificationCallback, (__bridge CFStringRef)kBroadcastStoppedNotification, NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 }
 
 - (void)clearObserver {
+    NSLog(@"### ScheenshareEventEmiter clearObserver");
     CFNotificationCenterRemoveObserver(_notificationCenter, (__bridge const void *)(self), (__bridge CFStringRef)kBroadcastStartedNotification, NULL);
     CFNotificationCenterRemoveObserver(_notificationCenter, (__bridge const void *)(self), (__bridge CFStringRef)kBroadcastStoppedNotification, NULL);
 }
@@ -56,6 +58,7 @@ void broadcastStartedNotificationCallback(CFNotificationCenterRef center,
                                           CFStringRef name,
                                           const void *object,
                                           CFDictionaryRef userInfo) {
+    NSLog(@"### broadcastStartedNotificationCallback");
     ExternalAPI *externalAPI = [[JitsiMeet sharedInstance] getExternalAPI];
     [externalAPI toggleScreenShare:true];
 }
@@ -65,6 +68,7 @@ void broadcastStoppedNotificationCallback(CFNotificationCenterRef center,
                                           CFStringRef name,
                                           const void *object,
                                           CFDictionaryRef userInfo) {
+    NSLog(@"### broadcastStoppedNotificationCallback");
     ExternalAPI *externalAPI = [[JitsiMeet sharedInstance] getExternalAPI];
     [externalAPI toggleScreenShare:false];
 }

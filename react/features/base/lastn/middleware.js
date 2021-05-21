@@ -36,6 +36,7 @@ MiddlewareRegistry.register(store => next => action => {
     case SCREEN_SHARE_REMOTE_PARTICIPANTS_UPDATED:
     case SELECT_LARGE_VIDEO_PARTICIPANT:
     case SET_AUDIO_ONLY:
+        console.log('### setAudioOnly');
     case SET_FILMSTRIP_ENABLED:
     case SET_TILE_VIEW:
         _updateLastN(store);
@@ -102,6 +103,7 @@ function _updateLastN({ dispatch, getState }) {
         lastNSelected = 1;
     }
 
+    console.log('### lastN: ', lastNSelected);
     logger.info(`Setting last N to: ${lastNSelected}`);
     dispatch(setLastN(lastNSelected));
 }

@@ -5,7 +5,7 @@ import { NativeEventEmitter, NativeModules } from 'react-native';
 
 import { ENDPOINT_TEXT_MESSAGE_NAME } from '../../../../modules/API/constants';
 import { appNavigate } from '../../app/actions';
-import { APP_WILL_MOUNT } from '../../base/app/actionTypes';
+import { APP_WILL_MOUNT, APP_WILL_UNMOUNT } from '../../base/app/actionTypes';
 import {
     CONFERENCE_FAILED,
     CONFERENCE_JOINED,
@@ -90,9 +90,17 @@ MiddlewareRegistry.register(store => next => action => {
     const { type } = action;
 
     switch (type) {
-    case APP_WILL_MOUNT:
+    case APP_WILL_MOUNT: {
+        console.log("### APP_WILL_MOUNT");
+        removeAllEvents();
         _registerForNativeEvents(store);
         break;
+    }
+    case APP_WILL_UNMOUNT: {
+        console.log("### APP_WILL_UNMOUNT");
+        removeAllEvents();
+        break;
+    }
     case CONFERENCE_FAILED: {
         const { error, ...data } = action;
 
@@ -264,6 +272,21 @@ StateListenerRegistry.register(
         store.dispatch(setParticipantsWithScreenShare(newScreenShares));
 
     }, 100));
+/** 
+ * 
+ * 
+*/
+function removeAllEvents() {
+    eventEmitter.removeAllListeners(ExternalAPI.HANG_UP);
+    eventEmitter.removeAllListeners(ExternalAPI.SET_AUDIO_MUTED);
+    eventEmitter.removeAllListeners(ExternalAPI.SET_VIDEO_MUTED);
+    eventEmitter.removeAllListeners(ExternalAPI.SEND_ENDPOINT_TEXT_MESSAGE);
+    eventEmitter.removeAllListeners(ExternalAPI.TOGGLE_SCREEN_SHARE);
+    eventEmitter.removeAllListeners(ExternalAPI.RETRIEVE_PARTICIPANTS_INFO);
+    eventEmitter.removeAllListeners(ExternalAPI.OPEN_CHAT);
+    eventEmitter.removeAllListeners(ExternalAPI.CLOSE_CHAT);
+    eventEmitter.removeAllListeners(ExternalAPI.SEND_CHAT_MESSAGE);
+}
 
 /**
  * Registers for events sent from the native side via NativeEventEmitter.
@@ -274,6 +297,8 @@ StateListenerRegistry.register(
  */
 function _registerForNativeEvents(store) {
     const { getState, dispatch } = store;
+
+    console.log('### _registerForNativeEvents');
 
     eventEmitter.addListener(ExternalAPI.HANG_UP, () => {
         dispatch(appNavigate(undefined));
@@ -301,6 +326,7 @@ function _registerForNativeEvents(store) {
     });
 
     eventEmitter.addListener(ExternalAPI.TOGGLE_SCREEN_SHARE, ({ enabled }) => {
+        console.log('### middleware ExternalAPI.TOGGLE_SCREEN_SHARE event');
         dispatch(toggleScreensharing(enabled));
     });
 

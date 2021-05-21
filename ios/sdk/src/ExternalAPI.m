@@ -165,6 +165,7 @@ RCT_EXPORT_METHOD(sendEvent:(NSString *)name
 }
 
 - (void)toggleScreenShare:(BOOL)enabled {
+    NSLog(@"### ExternalAPI toggleScreenShare: %d", enabled);
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     data[@"enabled"] = [NSNumber numberWithBool:enabled];
     

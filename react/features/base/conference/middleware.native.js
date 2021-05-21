@@ -33,6 +33,8 @@ function _toggleScreenSharing(enabled, store) {
     const { dispatch, getState } = store;
     const state = getState();
 
+    console.log('### toggleScreenSharing: ', enabled);
+
     if (enabled) {
         const isSharing = isLocalVideoTrackDesktop(state);
 
@@ -53,6 +55,7 @@ function _toggleScreenSharing(enabled, store) {
  * @returns {void}
  */
 function _startScreenSharing(dispatch, state) {
+    console.log('### startScreenSharing');
     setPictureInPictureDisabled(true);
 
     JitsiMeetJS.createLocalTracks({ devices: [ 'desktop' ] })
